@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DETIQ - Detektif Integritas Qur'ani</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons (FontAwesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        arabic: ['Amiri', 'serif'],
+                    },
+                    colors: {
+                        navy: {
+                            800: '#1e3a5f',
+                            900: '#0f172a',
+                        },
+                        emerald: {
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                        },
+                        gold: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                        'slide-up': 'slideUp 0.5s ease-out forwards',
+                        'bounce-slow': 'bounce 3s infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #f8fafc; /* slate-50 */
+            color: #334155; /* slate-700 */
+        }
+        .page-section {
+            display: none;
+            min-height: 100vh;
+        }
+        .page-section.active {
+            display: block;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .evidence-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .evidence-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-color: #f59e0b; /* gold */
+        }
+        .ayat-text {
+            line-height: 2.5;
+            direction: rtl;
+        }
+        /* Custom Scrollbar for textareas */
+        textarea::-webkit-scrollbar {
+            width: 8px;
+        }
+        textarea::-webkit-scrollbar-track {
+            background: #f1f5f9; 
+            border-radius: 4px;
+        }
+        textarea::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        textarea::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+</head>
+<body class="antialiased font-sans selection:bg-emerald-200 selection:text-emerald-900">
+
+    <!-- Top Navigation (Hidden on Splash) -->
+    <nav id="top-nav" class="hidden sticky top-0 z-50 bg-navy-900 text-white shadow-md w-full">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2 font-bold text-lg">
+                <i class="fas fa-search text-gold-400"></i>
+                <span>DETIQ</span>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button onclick="downloadApp()" class="text-sm bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded-full transition border border-emerald-500 flex items-center space-x-2 shadow-lg">
+                    <i class="fas fa-download"></i>
+                    <span class="hidden sm:inline">Unduh App</span>
+                </button>
+                <button onclick="navigateTo('dashboard')" class="text-sm bg-navy-800 hover:bg-navy-700 px-4 py-2 rounded-full transition border border-navy-700 flex items-center space-x-2">
+                    <i class="fas fa-home"></i>
+                    <span class="hidden sm:inline">Dashboard</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main id="app-container" class="w-full">
+
+        <section id="page-splash" class="page-section active bg-navy-900 text-white min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 relative overflow-hidden w-full">
+            <!-- Decorative background elements -->
+            <div class="absolute inset-0 overflow-hidden opacity-10 pointer-events-none">
+                <i class="fas fa-balance-scale text-8xl md:text-9xl absolute top-10 -left-5 md:-left-10 rotate-12"></i>
+                <i class="fas fa-search text-8xl md:text-9xl absolute bottom-10 -right-5 md:-right-10 -rotate-12"></i>
+            </div>
+
+            <div class="z-10 flex flex-col items-center text-center w-full max-w-2xl px-2 sm:px-0 animate-slide-up mx-auto">
+                <div class="inline-flex items-center justify-center w-20 h-20 md:w-24 md:h-24 bg-emerald-600 rounded-full mb-4 md:mb-6 shadow-[0_0_30px_rgba(16,185,129,0.5)]">
+                    <i class="fas fa-user-secret text-4xl md:text-5xl text-white"></i>
+                </div>
+                
+                <h1 class="text-4xl md:text-6xl font-extrabold mb-2 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-gold-400">
+                    DETIQ
+                </h1>
+                <h2 class="text-xl md:text-3xl font-bold mb-4 text-emerald-100">Detektif Integritas Qur'ani</h2>
+                
+                <div class="bg-navy-800/80 p-3 md:p-4 rounded-xl mb-6 md:mb-8 border border-navy-700 w-full max-w-sm sm:max-w-md mx-auto">
+                    <p class="text-xs md:text-base text-gray-300">Media Pembelajaran Al-Qur'an Hadis Kelas IX<br>MTsN Seruyan</p>
+                    <p class="text-emerald-400 font-semibold mt-2 text-sm md:text-base">Materi: Perdagangan dalam Islam</p>
+                    <p class="text-gold-400 font-medium text-sm md:text-base">Ayat Kunci: QS. Al-An’am ayat 152</p>
+                </div>
+
+                <p class="text-lg md:text-2xl font-light italic mb-8 text-gray-200 px-4">
+                    "Selidiki Fakta, Hayati Ayat, Tegakkan Kejujuran."
+                </p>
+
+                <div class="bg-white/10 p-5 md:p-6 rounded-2xl mb-8 md:mb-10 backdrop-blur-sm text-center shadow-lg border border-white/10 w-full">
+                    <p class="text-gray-200 leading-relaxed text-sm md:text-base">
+                        <i class="fas fa-info-circle text-emerald-400 mr-1 md:mr-2"></i>
+                        Seorang detektif yang hebat tidak terburu-buru menuduh. Ia mengumpulkan bukti, memeriksa fakta, berpikir adil, dan menjadikan nilai Al-Qur’an sebagai pedoman. Siapkah kamu menjalankan misi ini?
+                    </p>
+                </div>
+
+                <button onclick="navigateTo('dashboard')" class="group relative px-6 md:px-8 py-3 md:py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-full text-base md:text-lg shadow-lg hover:shadow-emerald-500/50 transition-all duration-300 transform hover:-translate-y-1 overflow-hidden w-[90%] sm:w-auto">
+                    <span class="relative z-10 flex items-center justify-center">
+                        MULAI INVESTIGASI <i class="fas fa-arrow-right ml-3 group-hover:translate-x-1 transition-transform"></i>
+                    </span>
+                </button>
+            </div>
+        </section>
+
+        <section id="page-dashboard" class="page-section bg-slate-100 min-h-screen pb-20">
+            <div class="bg-navy-900 text-white pt-16 pb-24 px-6 rounded-b-[3rem] shadow-xl relative overflow-hidden">
+                <div class="max-w-5xl mx-auto relative z-10">
+                    <h2 class="text-3xl font-bold mb-2">Pusat Kendali Detektif</h2>
+                    <p class="text-emerald-300">Pilih misi untuk memulai investigasimu hari ini.</p>
+                </div>
+            </div>
+
+            <div class="max-w-5xl mx-auto px-4 -mt-16">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    
+                    <!-- Menu 1 -->
+                    <div onclick="navigateTo('game')" class="glass-card rounded-2xl p-6 cursor-pointer hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group relative overflow-hidden border-t-4 border-t-blue-500">
+                        <div class="absolute top-0 right-0 bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-bl-lg">Misi 1</div>
+                        <div class="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-blue-500 transition-colors">
+                            <i class="fas fa-gamepad text-2xl text-blue-600 group-hover:text-white transition-colors"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-2">Pemanasan: Menimbang Buah</h3>
+                        <p class="text-slate-600 text-sm mb-4">Uji instingmu dalam kasus timbangan pasar sebelum memulai misi utama.</p>
+                        <span class="text-blue-600 font-semibold text-sm flex items-center">Mulai <i class="fas fa-chevron-right ml-1 text-xs"></i></span>
+                    </div>
+
+                    <!-- Menu 2 -->
+                    <div onclick="navigateTo('ayat')" class="glass-card rounded-2xl p-6 cursor-pointer hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group relative overflow-hidden border-t-4 border-t-emerald-500">
+                        <div class="absolute top-0 right-0 bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-bl-lg">Misi 2</div>
+                        <div class="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-emerald-500 transition-colors">
+                            <i class="fas fa-book-open text-2xl text-emerald-600 group-hover:text-white transition-colors"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-2">Memahami Ayat: QS. Al-An'am 152</h3>
+                        <p class="text-slate-600 text-sm mb-4">Baca dan hayati pedoman utama dari Al-Qur'an tentang keadilan.</p>
+                        <span class="text-emerald-600 font-semibold text-sm flex items-center">Mulai <i class="fas fa-chevron-right ml-1 text-xs"></i></span>
+                    </div>
+
+                    <!-- Menu 3 -->
+                    <div onclick="navigateTo('materi')" class="glass-card rounded-2xl p-6 cursor-pointer hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group relative overflow-hidden border-t-4 border-t-purple-500">
+                        <div class="absolute top-0 right-0 bg-purple-100 text-purple-800 text-xs font-bold px-3 py-1 rounded-bl-lg">Misi 3</div>
+                        <div class="w-14 h-14 bg-purple-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-purple-500 transition-colors">
+                            <i class="fas fa-chalkboard-teacher text-2xl text-purple-600 group-hover:text-white transition-colors"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-2">Bedah Materi: Perdagangan Islam</h3>
+                        <p class="text-slate-600 text-sm mb-4">Kumpulkan pengetahuan tentang prinsip kejujuran dalam berdagang.</p>
+                        <span class="text-purple-600 font-semibold text-sm flex items-center">Mulai <i class="fas fa-chevron-right ml-1 text-xs"></i></span>
+                    </div>
+
+                    <!-- Menu 4 -->
+                    <div onclick="navigateTo('misi')" class="glass-card rounded-2xl p-6 cursor-pointer hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group relative overflow-hidden border-t-4 border-t-gold-500 md:col-span-2 lg:col-span-2 bg-gradient-to-br from-white to-orange-50">
+                        <div class="absolute top-0 right-0 bg-gold-100 text-orange-800 text-xs font-bold px-3 py-1 rounded-bl-lg">Misi Utama 4</div>
+                        <div class="flex items-start">
+                            <div class="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mb-4 mr-4 flex-shrink-0 group-hover:bg-gold-500 transition-colors shadow-inner">
+                                <i class="fas fa-user-secret text-3xl text-gold-600 group-hover:text-white transition-colors"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-slate-800 mb-2">Kasus Timbangan Misterius</h3>
+                                <p class="text-slate-700 text-sm mb-4 leading-relaxed">Saatnya bertugas! Ada laporan ketidaksesuaian berat belanjaan di pasar. Kumpulkan bukti, analisis fakta, hubungkan dengan ayat, dan susun laporan investigasimu.</p>
+                                <span class="inline-flex items-center px-4 py-2 bg-navy-900 text-white rounded-lg text-sm font-semibold hover:bg-navy-800 transition">Buka Berkas Kasus <i class="fas fa-folder-open ml-2"></i></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Menu 5 -->
+                    <div onclick="navigateTo('evaluasi')" class="glass-card rounded-2xl p-6 cursor-pointer hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group relative overflow-hidden border-t-4 border-t-red-500">
+                        <div class="absolute top-0 right-0 bg-red-100 text-red-800 text-xs font-bold px-3 py-1 rounded-bl-lg">Misi 5</div>
+                        <div class="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-red-500 transition-colors">
+                            <i class="fas fa-trophy text-2xl text-red-600 group-hover:text-white transition-colors"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-2">Tantangan Integritas (Wordwall)</h3>
+                        <p class="text-slate-600 text-sm mb-4">Uji kemampuan akhirmu setelah menyelesaikan seluruh investigasi.</p>
+                        <span class="text-red-600 font-semibold text-sm flex items-center">Mulai Evaluasi <i class="fas fa-chevron-right ml-1 text-xs"></i></span>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section id="page-game" class="page-section bg-slate-50 min-h-screen py-8 px-4">
+            <div class="max-w-3xl mx-auto">
+                <div class="text-center mb-8">
+                    <span class="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Misi 1: Pemanasan</span>
+                    <h2 class="text-3xl font-bold text-navy-900 mt-3"><i class="fas fa-balance-scale text-emerald-500 mr-2"></i> Menimbang Buah</h2>
+                    <p class="text-slate-600 mt-2">Mari latih kepekaanmu di pasar buah.</p>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+                    <!-- Game UI Container -->
+                    <div id="game-container" class="p-6 md:p-8">
+                        <!-- Illustration -->
+                        <div class="flex justify-center mb-8 h-40">
+                            <div class="relative w-64">
+                                <div class="absolute bottom-0 w-full h-4 bg-slate-200 rounded-full"></div>
+                                <div class="absolute bottom-4 left-1/2 -translate-x-1/2 w-32 h-24 bg-orange-100 rounded-t-xl border-4 border-orange-300 flex flex-wrap-reverse content-start justify-center overflow-hidden p-2 gap-1" id="scale-fruits-container">
+                                    <!-- Buah akan di-generate via JS -->
+                                </div>
+                                <div class="absolute bottom-4 -right-10 flex flex-col items-center">
+                                    <div class="w-16 h-12 bg-gray-800 rounded-lg flex items-center justify-center border-4 border-gray-600">
+                                        <span id="game-scale-display" class="font-mono text-emerald-400 font-bold text-xl">0.0 kg</span>
+                                    </div>
+                                    <div class="w-2 h-16 bg-gray-400"></div>
+                                    <div class="w-20 h-4 bg-gray-600 rounded-t-md"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question Area -->
+                        <div id="game-question-area">
+                            <h3 id="game-title" class="text-xl font-bold text-slate-800 mb-2">Tantangan 1: Pesanan Jeruk</h3>
+                            <p id="game-desc" class="text-slate-600 mb-6 text-lg">Seorang pembeli memesan 2 kg jeruk. Timbangan menunjukkan 2 kg. Apakah berat jeruk sesuai dengan pesanan?</p>
+                            
+                            <div id="game-options" class="space-y-3">
+                                <!-- Options will be injected by JS -->
+                            </div>
+
+                            <!-- Interactive Controls for Easy Mode -->
+                            <div id="interactive-controls" class="hidden mt-6">
+                                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-6">
+                                    <div class="flex justify-between items-center px-4">
+                                        <button onclick="changeFruits(-1)" class="w-14 h-14 rounded-full bg-red-100 text-red-600 hover:bg-red-500 hover:text-white text-3xl font-bold transition-all shadow-md flex items-center justify-center">-</button>
+                                        <div class="text-center">
+                                            <span id="fruit-count" class="text-4xl font-extrabold text-navy-900">0</span>
+                                            <span class="block text-sm text-slate-500 font-bold uppercase tracking-wide mt-1">Buah</span>
+                                        </div>
+                                        <button onclick="changeFruits(1)" class="w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 hover:bg-emerald-500 hover:text-white text-3xl font-bold transition-all shadow-md flex items-center justify-center">+</button>
+                                    </div>
+                                    <p class="text-center text-xs text-slate-400 mt-4"><i class="fas fa-info-circle"></i> Tekan tombol (+) untuk menambah dan (-) untuk mengurangi buah di timbangan</p>
+                                </div>
+                                <button onclick="checkInteractiveAnswer()" class="w-full px-6 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition shadow-lg text-lg flex justify-center items-center">
+                                    <i class="fas fa-balance-scale mr-2"></i> Cek Timbangan
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Feedback Area -->
+                        <div id="game-feedback" class="hidden mt-6 p-4 rounded-xl border">
+                            <div class="flex items-start">
+                                <div id="feedback-icon" class="text-2xl mr-3 mt-1"></div>
+                                <div>
+                                    <h4 id="feedback-title" class="font-bold text-lg"></h4>
+                                    <p id="feedback-text" class="text-slate-700 mt-1"></p>
+                                    <button id="game-next-btn" class="mt-4 px-4 py-2 bg-navy-900 text-white rounded-lg text-sm hover:bg-navy-800 transition">Lanjut</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Final Score Area -->
+                        <div id="game-result" class="hidden text-center py-6">
+                            <i class="fas fa-star text-5xl text-gold-400 mb-4 animate-bounce-slow"></i>
+                            <h3 class="text-2xl font-bold text-slate-800 mb-2">Latihan Selesai!</h3>
+                            <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 mb-6 text-left">
+                                <p class="text-slate-700 italic border-l-4 border-blue-500 pl-3">"Dalam perdagangan, ketepatan timbangan bukan sekadar persoalan angka. Di dalamnya terdapat amanah, kejujuran, dan hak orang lain."</p>
+                            </div>
+                            <div class="flex justify-center space-x-4">
+                                <button onclick="initGame()" class="px-5 py-2 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition">Main Lagi</button>
+                                <button onclick="navigateTo('ayat')" class="px-5 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-500 transition shadow-lg shadow-emerald-500/30">Lanjut Membaca Ayat <i class="fas fa-arrow-right ml-1"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Progress Bar -->
+                    <div class="h-2 bg-slate-100 w-full">
+                        <div id="game-progress" class="h-full bg-blue-500 transition-all duration-300" style="width: 33%"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="page-ayat" class="page-section bg-slate-50 min-h-screen py-8 px-4">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-8">
+                    <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Misi 2: Memahami Ayat</span>
+                    <h2 class="text-3xl font-bold text-navy-900 mt-3"><i class="fas fa-book-open text-emerald-500 mr-2"></i> QS. Al-An’am: 152</h2>
+                    <p class="text-slate-600 mt-2">Pedoman utama tentang keadilan dalam takaran dan timbangan.</p>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden mb-8">
+                    <div class="p-6 md:p-8">
+                        <h4 class="font-bold text-navy-900 mb-4 flex items-center text-xl"><i class="fab fa-youtube text-red-600 text-2xl mr-2"></i> Video Contoh Membaca Ayat</h4>
+                        
+                        <div class="aspect-w-16 aspect-h-9 mb-4 rounded-xl overflow-hidden shadow-md bg-slate-200 relative">
+                            <iframe class="w-full h-64 md:h-96" src="https://www.youtube.com/embed/uTZIbhnbVnI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                        
+                        <div class="flex justify-end mb-6">
+                            <a href="https://youtu.be/uTZIbhnbVnI?si=1UX0mmzmquN_E-sS" target="_blank" class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm font-medium shadow-sm">
+                                Tonton di YouTube <i class="fas fa-external-link-alt ml-2"></i>
+                            </a>
+                        </div>
+
+                        <div class="border-t border-slate-200 pt-6">
+                            <h4 class="font-bold text-navy-900 mb-2">Terjemahan Kementerian Agama RI:</h4>
+                            <p class="text-slate-700 leading-relaxed mb-6">
+                                "Dan janganlah kamu mendekati harta anak yatim, kecuali dengan cara yang lebih bermanfaat, sampai dia mencapai (usia) dewasa. <span class="font-bold bg-emerald-100 text-emerald-900 px-1 rounded">Dan sempurnakanlah takaran dan timbangan dengan adil.</span> Kami tidak membebani seseorang melainkan menurut kesanggupannya. Apabila kamu berbicara, bicaralah sejujurnya, sekalipun dia kerabat(mu) dan penuhilah janji Allah. Demikian itu Dia perintahkan kepadamu agar kamu ingat."
+                            </p>
+
+                            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg mb-8">
+                                <h5 class="font-bold text-blue-900 flex items-center mb-1"><i class="fas fa-lightbulb text-gold-500 mr-2"></i>Fokus Pembelajaran:</h5>
+                                <p class="text-sm text-blue-800">Ayat ini memuat banyak perintah, namun dalam misi kita, fokuslah pada kalimat: <strong>"Dan sempurnakanlah takaran dan timbangan dengan adil."</strong> Ini adalah landasan kejujuran dalam berdagang.</p>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-slate-200 pt-6">
+                            <h4 class="font-bold text-navy-900 mb-3">Aktivitas:</h4>
+                            <ul class="space-y-2 text-slate-700 list-decimal list-inside ml-2">
+                                <li>Dengarkan contoh bacaan ayat pada video.</li>
+                                <li>Perhatikan pelafalan dan panjang pendek bacaan (tajwid).</li>
+                                <li>Bacalah ayat secara mandiri atau bersama guru.</li>
+                            </ul>
+                            
+                            <div class="mt-6 bg-orange-50 p-4 rounded-xl border border-orange-200">
+                                <label class="block text-orange-900 font-semibold mb-2" for="refleksi-ayat">Refleksi (Opsional): Bagian mana dari ayat ini yang paling berkaitan dengan ketepatan timbangan?</label>
+                                <textarea id="refleksi-ayat" class="w-full p-3 border border-orange-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white" rows="2" placeholder="Tuliskan pemikiranmu di sini..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end">
+                    <button onclick="navigateTo('materi')" class="px-6 py-3 bg-navy-900 text-white rounded-full hover:bg-navy-800 transition font-bold shadow-lg shadow-navy-900/30 flex items-center">
+                        Lanjut ke Bedah Materi <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="page-materi" class="page-section bg-slate-50 min-h-screen py-8 px-4">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-10">
+                    <span class="bg-purple-100 text-purple-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Misi 3: Menguasai Materi</span>
+                    <h2 class="text-3xl font-bold text-navy-900 mt-3"><i class="fas fa-store text-emerald-500 mr-2"></i> Perdagangan dalam Islam</h2>
+                    <p class="text-slate-600 mt-2">Pahami prinsip-prinsip syariat untuk menjadi pedagang dan pembeli yang baik.</p>
+                </div>
+
+                <!-- Interactive Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                    
+                    <!-- Card 1 -->
+                    <div class="bg-white rounded-xl p-6 shadow-md border border-slate-200 hover:shadow-lg transition-shadow relative overflow-hidden group">
+                        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 text-xl mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-slate-800 mb-2">1. Pengertian Perdagangan</h3>
+                        <p class="text-slate-600 text-sm mb-4">Aktivitas pertukaran barang atau jasa yang dibenarkan syariat Islam. Penjual dan pembeli memiliki hak & kewajiban yang harus dijaga.</p>
+                        <div class="bg-slate-50 p-3 rounded-lg text-xs border border-slate-100">
+                            <strong class="text-purple-700">Contoh:</strong> Pedagang menjual buah sesuai kualitas, jumlah, dan berat yang disepakati dengan pembeli.
+                        </div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="bg-white rounded-xl p-6 shadow-md border border-slate-200 hover:shadow-lg transition-shadow relative overflow-hidden group">
+                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 text-xl mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-hand-holding-heart"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-slate-800 mb-2">2. Kejujuran dalam Berdagang</h3>
+                        <p class="text-slate-600 text-sm mb-4">Menyampaikan informasi secara benar, tidak menyembunyikan cacat barang, dan tidak memanipulasi berat atau kualitas.</p>
+                        <div class="bg-slate-50 p-3 rounded-lg text-xs border border-slate-100">
+                            <strong class="text-blue-700">Contoh:</strong> Pedagang menjelaskan kondisi buah dengan sebenarnya dan tidak mengurangi berat pesanan.
+                        </div>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="bg-white rounded-xl p-6 shadow-md border border-slate-200 hover:shadow-lg transition-shadow relative overflow-hidden group">
+                        <div class="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 text-xl mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-balance-scale-right"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-slate-800 mb-2">3. Ketepatan Takaran & Timbangan</h3>
+                        <p class="text-slate-600 text-sm mb-4">Islam mengajarkan agar takaran/timbangan dipenuhi dengan adil. Alat ukur perlu diperiksa agar hasilnya dapat dipercaya.</p>
+                        <div class="bg-slate-50 p-3 rounded-lg text-xs border border-slate-100">
+                            <strong class="text-emerald-700">Contoh:</strong> Pembeli memesan 2 kg jeruk dan menerima berat sesuai pesanan berdasarkan penimbangan yang benar.
+                        </div>
+                    </div>
+
+                    <!-- Card 4 -->
+                    <div class="bg-white rounded-xl p-6 shadow-md border border-slate-200 hover:shadow-lg transition-shadow relative overflow-hidden group">
+                        <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center text-red-600 text-xl mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-ban"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-slate-800 mb-2">4. Larangan Mengurangi Hak</h3>
+                        <p class="text-slate-600 text-sm mb-4">Mengurangi berat merugikan pembeli. Namun, jika ada ketidaksesuaian, penyebabnya harus diperiksa sebelum menyimpulkan kesengajaan.</p>
+                        <div class="bg-slate-50 p-3 rounded-lg text-xs border border-slate-100">
+                            <strong class="text-red-700">Contoh:</strong> Jika timbangan kurang, penjual dan pembeli memeriksa ulang alat ukur serta berat barang, bukan langsung bertengkar.
+                        </div>
+                    </div>
+
+                    <!-- Card 5 -->
+                    <div class="bg-white rounded-xl p-6 shadow-md border border-slate-200 hover:shadow-lg transition-shadow relative overflow-hidden group">
+                        <div class="w-12 h-12 bg-gold-100 rounded-full flex items-center justify-center text-gold-600 text-xl mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-gavel"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-slate-800 mb-2">5. Keadilan Selesaikan Masalah</h3>
+                        <p class="text-slate-600 text-sm mb-4">Perselisihan harus diselesaikan dengan memeriksa bukti, mendengarkan keterangan kedua pihak, dan mencari solusi adil.</p>
+                        <div class="bg-slate-50 p-3 rounded-lg text-xs border border-slate-100">
+                            <strong class="text-gold-700">Contoh:</strong> Pedagang dan pembeli menimbang ulang barang menggunakan timbangan lain yang telah diverifikasi.
+                        </div>
+                    </div>
+
+                    <!-- Card 6 -->
+                    <div class="bg-white rounded-xl p-6 shadow-md border border-slate-200 hover:shadow-lg transition-shadow relative overflow-hidden group">
+                        <div class="w-12 h-12 bg-navy-100 rounded-full flex items-center justify-center text-navy-600 text-xl mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-star-and-crescent"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-slate-800 mb-2">6. Integritas Qur’ani</h3>
+                        <p class="text-slate-600 text-sm mb-4">Menjadikan nilai Al-Qur’an sebagai pedoman dalam bersikap, mengambil keputusan, dan memperlakukan orang lain.</p>
+                        <div class="bg-slate-50 p-3 rounded-lg text-xs border border-slate-100">
+                            <strong class="text-navy-700">Contoh:</strong> Bersikap jujur saat berjualan di sekolah, mencatat transaksi benar, dan mengembalikan uang lebih.
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Video Section -->
+                <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden mb-8">
+                    <div class="p-6 md:p-8">
+                        <h4 class="font-bold text-xl text-navy-900 mb-4 flex items-center"><i class="fab fa-youtube text-red-600 mr-2"></i> Video Materi Pembelajaran</h4>
+                        
+                        <div class="aspect-w-16 aspect-h-9 mb-4 rounded-xl overflow-hidden shadow-md bg-slate-200">
+                            <iframe class="w-full h-64 md:h-96" src="https://www.youtube.com/embed/mPTmHC1swp0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                        
+                        <div class="flex justify-end mb-6">
+                            <a href="https://youtu.be/mPTmHC1swp0?si=lxNROAcZNMWJ0CLo" target="_blank" class="inline-flex items-center px-4 py-2 bg-navy-800 text-white rounded-lg hover:bg-navy-900 transition text-sm font-medium shadow-sm">
+                                Tonton Video Materi di YouTube <i class="fas fa-external-link-alt ml-2"></i>
+                            </a>
+                        </div>
+
+                        <div class="bg-orange-50 border-l-4 border-orange-400 p-5 rounded-r-lg">
+                            <h5 class="font-bold text-orange-900 mb-2">Pertanyaan Refleksi Sebelum Misi:</h5>
+                            <p class="text-slate-800 italic">"Jika kamu menemukan ketidaksesuaian antara berat yang dijanjikan dan berat sebenarnya, tindakan apa yang paling adil untuk dilakukan?"</p>
+                            <p class="text-sm text-slate-500 mt-2">Simpan jawabanmu, kamu akan membutuhkannya di misi selanjutnya!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-center">
+                    <button onclick="navigateTo('misi')" class="px-8 py-4 bg-gold-500 text-navy-900 rounded-full hover:bg-gold-400 transition font-bold text-lg shadow-xl shadow-gold-500/30 flex items-center transform hover:-translate-y-1">
+                        MULAI MISI DETEKTIF <i class="fas fa-search-location ml-3 text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="page-misi" class="page-section bg-slate-900 min-h-screen py-8 px-4 text-slate-300">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-8">
+                    <span class="bg-gold-500 text-navy-900 font-bold px-4 py-1 rounded-full uppercase tracking-wider text-sm shadow-[0_0_15px_rgba(245,158,11,0.5)]">BERKAS RAHASIA #001</span>
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-white mt-4 mb-2">KASUS TIMBANGAN MISTERIUS</h2>
+                </div>
+
+                <!-- Case Narrative -->
+                <div class="bg-navy-800 rounded-2xl p-6 md:p-8 shadow-2xl border border-navy-600 mb-8 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-slate-700/30 rounded-bl-full pointer-events-none"></div>
+                    <h3 class="text-xl font-bold text-gold-400 mb-4 flex items-center"><i class="fas fa-file-alt mr-2"></i> Narasi Kasus</h3>
+                    <p class="text-lg leading-relaxed text-slate-200">
+                        "Di sebuah pasar, seorang pembeli membeli jeruk dengan berat yang tercantum pada bukti pembelian sebanyak 2 kg. Namun, ketika barang ditimbang ulang menggunakan timbangan pembanding yang telah diperiksa keakuratannya, hasilnya menunjukkan 1,7 kg. Pembeli kemudian meminta pedagang memeriksa kembali timbangan. Pedagang mengatakan bahwa timbangan yang digunakan mungkin mengalami gangguan."
+                    </p>
+                    <div class="mt-6 p-4 bg-navy-900/50 rounded-lg border border-navy-700 text-emerald-400 font-medium text-center">
+                        Apakah telah terjadi kecurangan? Apa yang harus dilakukan agar masalah ini diselesaikan secara adil?
+                    </div>
+                </div>
+
+                <!-- Evidence Section -->
+                <h3 class="text-2xl font-bold text-white mb-6 border-b border-navy-700 pb-2"><i class="fas fa-search text-emerald-500 mr-2"></i> Kumpulkan Bukti</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+                    <!-- Bukti A -->
+                    <div class="evidence-card bg-slate-800 border border-slate-600 p-5 rounded-xl flex items-start">
+                        <div class="bg-slate-700 text-slate-300 w-10 h-10 rounded-lg flex items-center justify-center font-bold text-xl mr-4 flex-shrink-0">A</div>
+                        <div>
+                            <h4 class="font-bold text-white mb-1">Bukti Pembelian</h4>
+                            <p class="text-sm text-slate-400">Berat jeruk pada bukti pembelian yang diberikan oleh pedagang adalah tercatat <strong class="text-emerald-400">2 kg</strong>.</p>
+                        </div>
+                    </div>
+                    <!-- Bukti B -->
+                    <div class="evidence-card bg-slate-800 border border-slate-600 p-5 rounded-xl flex items-start">
+                        <div class="bg-slate-700 text-slate-300 w-10 h-10 rounded-lg flex items-center justify-center font-bold text-xl mr-4 flex-shrink-0">B</div>
+                        <div>
+                            <h4 class="font-bold text-white mb-1">Hasil Penimbangan Ulang</h4>
+                            <p class="text-sm text-slate-400">Timbangan pembanding (yang telah diverifikasi keakuratannya) menunjukkan berat nyata barang adalah <strong class="text-red-400">1,7 kg</strong>.</p>
+                        </div>
+                    </div>
+                    <!-- Bukti C -->
+                    <div class="evidence-card bg-slate-800 border border-slate-600 p-5 rounded-xl flex items-start">
+                        <div class="bg-slate-700 text-slate-300 w-10 h-10 rounded-lg flex items-center justify-center font-bold text-xl mr-4 flex-shrink-0">C</div>
+                        <div>
+                            <h4 class="font-bold text-white mb-1">Keterangan Pedagang</h4>
+                            <p class="text-sm text-slate-400">Pedagang tidak membantah hasil timbangan ulang, tetapi menyatakan bahwa timbangan miliknya <em>"mungkin mengalami gangguan teknis"</em>.</p>
+                        </div>
+                    </div>
+                    <!-- Bukti D -->
+                    <div class="evidence-card bg-slate-800 border border-slate-600 p-5 rounded-xl flex items-start">
+                        <div class="bg-slate-700 text-slate-300 w-10 h-10 rounded-lg flex items-center justify-center font-bold text-xl mr-4 flex-shrink-0">D</div>
+                        <div>
+                            <h4 class="font-bold text-white mb-1">Permintaan Pembeli</h4>
+                            <p class="text-sm text-slate-400">Pembeli tidak langsung menuduh, melainkan <strong>meminta agar timbangan dan berat barang diperiksa kembali</strong> bersama-sama.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analysis Board -->
+                <div class="bg-slate-800 rounded-2xl p-6 shadow-lg mb-10 border-l-4 border-gold-500">
+                    <h3 class="text-xl font-bold text-white mb-4"><i class="fas fa-clipboard-list text-gold-400 mr-2"></i> Papan Analisis Detektif</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-navy-900/50 p-4 rounded-xl border border-navy-700">
+                            <h4 class="font-bold text-emerald-400 mb-3 border-b border-emerald-900 pb-2">Fakta yang Diketahui</h4>
+                            <ul class="list-disc list-inside text-sm text-slate-300 space-y-2">
+                                <li>Berat pada bukti pembelian tercatat 2 kg.</li>
+                                <li>Penimbangan ulang menunjukkan 1,7 kg.</li>
+                                <li>Pedagang menyatakan kemungkinan ada gangguan pada timbangan.</li>
+                                <li>Pembeli meminta pemeriksaan ulang.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-navy-900/50 p-4 rounded-xl border border-navy-700">
+                            <h4 class="font-bold text-orange-400 mb-3 border-b border-orange-900 pb-2">Hal yang Masih Perlu Diperiksa</h4>
+                            <ul class="list-disc list-inside text-sm text-slate-300 space-y-2">
+                                <li>Apakah timbangan pedagang benar-benar bermasalah?</li>
+                                <li>Apakah penimbangan awal dilakukan dengan benar?</li>
+                                <li>Apakah terdapat bukti kesengajaan mengurangi berat?</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-xs text-center text-slate-400 italic">
+                        "Perbedaan antara fakta (apa yang terjadi) dan dugaan (motivasi kesengajaan) sangat penting dalam mengambil keputusan yang adil."
+                    </div>
+                </div>
+
+                <!-- Lembar Kerja -->
+                <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 text-slate-800 mb-8" id="lembar-kerja">
+                    <h3 class="text-2xl font-bold text-navy-900 mb-2 border-b-2 border-slate-100 pb-4 flex items-center">
+                        <i class="fas fa-pen-square text-emerald-600 mr-3"></i> Lembar Kerja Investigasi Digital
+                    </h3>
+                    <p class="text-sm text-slate-500 mb-8">Isi kolom di bawah ini berdasarkan analisis fakta dan bukti. Jawabanmu akan disimpan sementara (Draft).</p>
+
+                    <form id="investigasi-form" class="space-y-6">
+                        <!-- Q1 -->
+                        <div class="form-group bg-slate-50 p-5 rounded-xl border border-slate-200">
+                            <label class="block font-bold text-navy-900 mb-2 text-lg">1. Apa masalah utama dalam kasus ini?</label>
+                            <p class="text-xs text-blue-600 mb-3 font-medium"><i class="fas fa-info-circle"></i> Petunjuk: Jelaskan persoalan utama berdasarkan cerita kasus.</p>
+                            <textarea id="q1" rows="3" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-shadow" placeholder="Ketik jawabanmu di sini..."></textarea>
+                        </div>
+                        <!-- Q2 -->
+                        <div class="form-group bg-slate-50 p-5 rounded-xl border border-slate-200">
+                            <label class="block font-bold text-navy-900 mb-2 text-lg">2. Bukti apa yang menunjukkan ketidaksesuaian berat?</label>
+                            <p class="text-xs text-blue-600 mb-3 font-medium"><i class="fas fa-info-circle"></i> Petunjuk: Sebutkan angka berat pada bukti pembelian dan hasil penimbangan ulang.</p>
+                            <textarea id="q2" rows="3" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-shadow" placeholder="Ketik jawabanmu di sini..."></textarea>
+                        </div>
+                        <!-- Q3 -->
+                        <div class="form-group bg-slate-50 p-5 rounded-xl border border-slate-200">
+                            <label class="block font-bold text-navy-900 mb-2 text-lg">3. Apakah pedagang terbukti sengaja berbuat curang? Jelaskan alasanmu.</label>
+                            <p class="text-xs text-blue-600 mb-3 font-medium"><i class="fas fa-info-circle"></i> Petunjuk: Bedakan fakta ketidaksesuaian berat dari dugaan kesengajaan. Gunakan bukti yang tersedia.</p>
+                            <textarea id="q3" rows="3" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-shadow" placeholder="Ketik jawabanmu di sini..."></textarea>
+                        </div>
+                        <!-- Q4 -->
+                        <div class="form-group bg-slate-50 p-5 rounded-xl border border-slate-200">
+                            <label class="block font-bold text-navy-900 mb-2 text-lg">4. Bagaimana QS. Al-An'am ayat 152 membimbing penyelesaian kasus ini?</label>
+                            <p class="text-xs text-blue-600 mb-3 font-medium"><i class="fas fa-info-circle"></i> Petunjuk: Hubungkan pesan ayat tentang keadilan dan penyempurnaan takaran serta timbangan dengan kasus.</p>
+                            <textarea id="q4" rows="3" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-shadow" placeholder="Ketik jawabanmu di sini..."></textarea>
+                        </div>
+                        <!-- Q5 -->
+                        <div class="form-group bg-slate-50 p-5 rounded-xl border border-slate-200">
+                            <label class="block font-bold text-navy-900 mb-2 text-lg">5. Apa solusi yang adil bagi pedagang dan pembeli?</label>
+                            <p class="text-xs text-blue-600 mb-3 font-medium"><i class="fas fa-info-circle"></i> Petunjuk: Usulkan langkah yang adil, dapat dilakukan, dan mempertimbangkan hak kedua pihak.</p>
+                            <textarea id="q5" rows="3" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-shadow" placeholder="Ketik jawabanmu di sini..."></textarea>
+                        </div>
+                        <!-- Q6 -->
+                        <div class="form-group bg-slate-50 p-5 rounded-xl border border-slate-200">
+                            <label class="block font-bold text-navy-900 mb-2 text-lg">6. Kesimpulan akhir investigasi</label>
+                            <p class="text-xs text-blue-600 mb-3 font-medium"><i class="fas fa-info-circle"></i> Petunjuk: Rangkum temuan, penilaian terhadap bukti, solusi, dan pelajaran yang kamu peroleh.</p>
+                            <textarea id="q6" rows="4" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-shadow" placeholder="Ketik jawabanmu di sini..."></textarea>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex flex-wrap gap-4 pt-6 mt-6 border-t border-slate-200 justify-between items-center">
+                            <button type="button" onclick="saveDraft()" class="px-5 py-2 text-navy-600 bg-slate-200 hover:bg-slate-300 font-semibold rounded-lg transition flex items-center">
+                                <i class="fas fa-save mr-2"></i> Simpan Draf
+                            </button>
+                            <span id="save-status" class="text-sm text-emerald-600 hidden font-medium transition-opacity duration-300"><i class="fas fa-check-circle mr-1"></i> Draf tersimpan di perangkat!</span>
+                            <button type="button" onclick="goToLaporan()" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition shadow-lg flex items-center ml-auto">
+                                Lihat Ringkasan Laporan <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section id="page-laporan" class="page-section bg-slate-100 min-h-screen py-8 px-4">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-navy-900 mb-2"><i class="fas fa-envelope-open-text text-gold-500 mr-2"></i> RUANG PELAPORAN DETEKTIF</h2>
+                    <p class="text-slate-600">Susun laporanmu, periksa kembali bukti, lalu kirimkan hasil investigasi kepada guru via Google Forms.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Preview Laporan -->
+                    <div class="md:col-span-2 bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden flex flex-col h-full">
+                        <div class="bg-navy-900 p-4 flex justify-between items-center text-white">
+                            <h3 class="font-bold"><i class="fas fa-file-signature mr-2"></i> Draf Laporanmu</h3>
+                        </div>
+                        <div class="p-6 flex-grow bg-slate-50 overflow-y-auto" style="max-height: 60vh;">
+                            <div id="laporan-preview-content" class="space-y-5 text-sm text-slate-800 font-mono whitespace-pre-wrap">
+                                <!-- JS will populate this -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Petunjuk Pengiriman & Link Google Forms -->
+                    <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 flex flex-col h-full">
+                        <h3 class="font-bold text-navy-900 text-lg mb-4 border-b pb-2"><i class="fas fa-list-ol mr-2 text-emerald-600"></i> Cara Mengirim Laporan</h3>
+                        <ol class="list-decimal list-outside ml-4 text-sm text-slate-700 space-y-3 mb-6">
+                            <li>Periksa kembali jawabanmu di sebelah kiri.</li>
+                            <li>Klik tombol <strong class="text-blue-700">"Buka Google Forms"</strong> di bawah.</li>
+                            <li>Isi Nama Lengkap dan Kelas (IX-A/IX-B).</li>
+                            <li><strong>Pindahkan</strong> jawaban yang ada di draf ini ke pertanyaan yang sesuai pada Google Forms secara manual. Jangan sampai tertukar!</li>
+                            <li>Klik tombol Kirim pada form.</li>
+                        </ol>
+                        
+                        <div class="bg-yellow-50 text-yellow-800 p-3 rounded-lg text-xs border border-yellow-200 mb-6">
+                            <i class="fas fa-exclamation-triangle mr-1"></i> <strong>Catatan:</strong> DETIQ hanya membantu menyusun draf. Kamu <strong>tetap harus</strong> mengisi dan mengirim Google Forms secara manual agar nilai masuk ke guru.
+                        </div>
+
+                        <div class="mt-auto space-y-3">
+                            <a href="https://forms.gle/YLJjQkbrubhNH2vPA" target="_blank" class="block w-full text-center px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition shadow-md">
+                                <i class="fab fa-google mr-2"></i> BUKA GOOGLE FORMS
+                            </a>
+                            <button onclick="navigateTo('misi')" class="block w-full text-center px-4 py-2 text-slate-600 bg-slate-100 hover:bg-slate-200 font-semibold rounded-xl transition">
+                                Edit Jawaban Lagi
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 text-center">
+                    <button onclick="navigateTo('evaluasi')" class="px-6 py-3 bg-navy-900 text-white rounded-full hover:bg-navy-800 transition font-bold inline-flex items-center shadow-lg">
+                        Lanjut ke Evaluasi Akhir <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="page-evaluasi" class="page-section bg-slate-50 min-h-screen py-8 px-4">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-8">
+                    <span class="bg-red-100 text-red-800 font-bold px-4 py-1 rounded-full uppercase tracking-wider text-sm">Misi 5: Ujian Akhir</span>
+                    <h2 class="text-3xl font-bold text-navy-900 mt-4 mb-2"><i class="fas fa-trophy text-gold-500 mr-2"></i> TANTANGAN INTEGRITAS</h2>
+                    <p class="text-slate-600">Uji pemahamanmu dengan kuis interaktif ini. Kerjakan secara mandiri!</p>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden mb-8 p-10 text-center">
+                    <i class="fas fa-gamepad text-6xl text-slate-300 mb-6"></i>
+                    <h3 class="text-2xl font-bold text-slate-800 mb-4">Game Evaluasi Siap Dimainkan</h3>
+                    <p class="text-slate-600 mb-8 max-w-lg mx-auto">Klik tombol di bawah ini untuk membuka tantangan Wordwall di halaman baru. Selesaikan semua soal untuk menguji kemampuanmu sebagai detektif integritas!</p>
+                    <a href="https://wordwall.net/resource/121687490?wwmethod=link" target="_blank" class="inline-flex items-center px-8 py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition font-bold shadow-lg hover:shadow-blue-600/50 transform hover:-translate-y-1">
+                        <i class="fas fa-external-link-alt mr-3"></i> BUKA WORDWALL SEKARANG
+                    </a>
+                </div>
+
+                <div class="bg-navy-900 text-white rounded-xl p-6 shadow-lg text-center mb-8">
+                    <h3 class="font-bold text-gold-400 mb-2"><i class="fas fa-lightbulb mr-2"></i> Refleksi Akhir</h3>
+                    <p class="text-slate-300 text-sm mb-4">Apa prinsip terpenting yang kamu pelajari? Bagaimana cara menerapkan kejujuran dalam kehidupan sehari-hari?</p>
+                    <button onclick="navigateTo('penutup')" class="px-8 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-full transition shadow-lg">
+                        Akhiri Misi Detektif <i class="fas fa-check ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="page-penutup" class="page-section bg-navy-900 text-white min-h-screen py-16 px-4 flex flex-col items-center justify-center relative overflow-hidden">
+            <!-- decorative bg -->
+            <div class="absolute inset-0 opacity-5" style="background-image: radial-gradient(circle at center, #10b981 1px, transparent 1px); background-size: 30px 30px;"></div>
+
+            <div class="max-w-3xl text-center relative z-10">
+                <div class="mb-6 relative inline-block">
+                    <i class="fas fa-certificate text-8xl text-gold-400"></i>
+                    <i class="fas fa-check text-4xl text-navy-900 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></i>
+                </div>
+                
+                <h1 class="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-gold-400 mb-6 uppercase tracking-wider">
+                    MISI SELESAI,<br>INTEGRITAS TERUJI!
+                </h1>
+
+                <div class="bg-slate-800/80 backdrop-blur border border-slate-700 p-8 rounded-2xl mb-8 shadow-2xl">
+                    <p class="text-lg leading-relaxed text-slate-300 mb-6 italic">
+                        "Menjadi Detektif Integritas Qur’ani bukan sekadar menemukan kesalahan. Seorang detektif yang berpegang pada nilai Al-Qur’an harus berani memeriksa fakta, jujur dalam menilai bukti, adil dalam mengambil keputusan, dan bertanggung jawab terhadap hak orang lain."
+                    </p>
+                    
+                    <div class="bg-navy-900 p-4 rounded-xl border border-emerald-900/50 mb-6 text-emerald-400 font-semibold text-lg">
+                        "Timbangan yang adil menjaga hak manusia;<br>hati yang jujur menjaga amanah kepada Allah."
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-slate-200 font-medium">
+                        <div class="bg-slate-700/50 py-3 px-2 rounded flex items-center justify-center"><i class="fas fa-check-circle text-emerald-500 mr-2"></i> Jujur dalam tindakan</div>
+                        <div class="bg-slate-700/50 py-3 px-2 rounded flex items-center justify-center"><i class="fas fa-balance-scale text-gold-400 mr-2"></i> Adil dalam keputusan</div>
+                        <div class="bg-slate-700/50 py-3 px-2 rounded flex items-center justify-center"><i class="fas fa-hand-holding-heart text-red-400 mr-2"></i> Tanggung jawab transaksi</div>
+                    </div>
+                </div>
+
+                <p class="text-xl font-bold text-white mb-10">
+                    Jadilah pedagang yang jujur, pembeli yang cermat, dan seorang Muslim yang menegakkan keadilan!
+                </p>
+
+                <div class="flex flex-wrap justify-center gap-4">
+                    <button onclick="navigateTo('dashboard')" class="px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition font-semibold">
+                        <i class="fas fa-home mr-2"></i> Kembali ke Dashboard
+                    </button>
+                    <button onclick="clearDraftAndRestart()" class="px-6 py-3 bg-red-900/50 hover:bg-red-800 border border-red-700 text-red-100 rounded-lg transition font-semibold text-sm">
+                        <i class="fas fa-redo-alt mr-2"></i> Ulangi Misi (Hapus Data)
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Toast Notification untuk Download -->
+        <div id="toast-notification" class="fixed bottom-5 right-5 transform translate-y-24 opacity-0 transition-all duration-300 z-[100] bg-emerald-600 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center space-x-3 pointer-events-none">
+            <i class="fas fa-check-circle text-2xl"></i>
+            <div>
+                <h4 class="font-bold text-sm">Unduhan Berhasil!</h4>
+                <p class="text-xs text-emerald-100 mt-0.5">File Media dapat dibuka secara offline tanpa internet.</p>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // State Management
+        let state = {
+            currentPage: 'splash',
+            drafts: {
+                q1: '', q2: '', q3: '', q4: '', q5: '', q6: ''
+            }
+        };
+
+        // Navigation
+        function navigateTo(pageId) {
+            // Hide all sections
+            document.querySelectorAll('.page-section').forEach(el => {
+                el.classList.remove('active');
+                el.classList.add('hidden'); // Ensure it doesn't take space
+            });
+            
+            // Show target section
+            const targetEl = document.getElementById(`page-${pageId}`);
+            if(targetEl) {
+                targetEl.classList.remove('hidden');
+                targetEl.classList.add('active');
+                window.scrollTo(0, 0); // Scroll to top
+                state.currentPage = pageId;
+            }
+
+            // Top Nav Visibility
+            const topNav = document.getElementById('top-nav');
+            if (pageId === 'splash') {
+                topNav.classList.add('hidden');
+            } else {
+                topNav.classList.remove('hidden');
+            }
+
+            // Specific page initialization
+            if(pageId === 'game') initGame();
+            if(pageId === 'laporan') renderLaporan();
+        }
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDrafts();
+            // Start at splash
+            navigateTo('splash');
+            
+            // Setup Textarea auto-save listeners
+            ['q1', 'q2', 'q3', 'q4', 'q5', 'q6'].forEach(id => {
+                const el = document.getElementById(id);
+                if(el) {
+                    el.addEventListener('input', () => {
+                        state.drafts[id] = el.value;
+                        // Lightly save to localStorage on every change
+                        localStorage.setItem('detiq_drafts', JSON.stringify(state.drafts));
+                    });
+                }
+            });
+        });
+
+        function loadDrafts() {
+            try {
+                const saved = localStorage.getItem('detiq_drafts');
+                if (saved) {
+                    state.drafts = JSON.parse(saved);
+                    // Populate textareas
+                    ['q1', 'q2', 'q3', 'q4', 'q5', 'q6'].forEach(id => {
+                        const el = document.getElementById(id);
+                        if(el && state.drafts[id]) {
+                            el.value = state.drafts[id];
+                        }
+                    });
+                }
+            } catch (e) {
+                console.error("Gagal memuat draf", e);
+            }
+        }
+
+        function saveDraft() {
+            localStorage.setItem('detiq_drafts', JSON.stringify(state.drafts));
+            const statusEl = document.getElementById('save-status');
+            statusEl.classList.remove('hidden');
+            setTimeout(() => {
+                statusEl.classList.add('hidden');
+            }, 3000);
+        }
+
+        function goToLaporan() {
+            saveDraft(); // Save before leaving
+            navigateTo('laporan');
+        }
+
+        function renderLaporan() {
+            const container = document.getElementById('laporan-preview-content');
+            
+            // Format text nicely
+            const qMap = [
+                { id: 'q1', title: '1. Masalah Utama:' },
+                { id: 'q2', title: '2. Bukti Ketidaksesuaian:' },
+                { id: 'q3', title: '3. Dugaan Kesengajaan:' },
+                { id: 'q4', title: '4. Panduan QS. Al-An\'am 152:' },
+                { id: 'q5', title: '5. Solusi yang Adil:' },
+                { id: 'q6', title: '6. Kesimpulan Akhir:' }
+            ];
+
+            let html = `<div class="font-bold text-navy-900 border-b border-slate-300 pb-2 mb-4">LAPORAN INVESTIGASI DIGITAL — DETIQ<br><span class="text-xs text-slate-500 font-normal">(Nama & Kelas diisi langsung di Google Forms)</span></div>`;
+
+            qMap.forEach(q => {
+                const val = state.drafts[q.id].trim() || "[Belum diisi]";
+                html += `<div class="mb-4">
+                            <strong class="text-slate-700 block mb-1">${q.title}</strong>
+                            <div class="bg-white p-3 rounded border border-slate-200 text-slate-600">${val}</div>
+                         </div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function clearDraftAndRestart() {
+            if(confirm("Yakin ingin menghapus semua jawaban dan mengulang dari awal?")) {
+                localStorage.removeItem('detiq_drafts');
+                state.drafts = {q1: '', q2: '', q3: '', q4: '', q5: '', q6: ''};
+                ['q1', 'q2', 'q3', 'q4', 'q5', 'q6'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if(el) el.value = '';
+                });
+                navigateTo('splash');
+            }
+        }
+
+        const gameQuestions = [
+            {
+                type: 'interactive',
+                title: "Latihan 1: Pesanan 2 kg Jeruk",
+                desc: "Pembeli memesan 2.0 kg jeruk. Timbangan saat ini hanya berisi 1.0 kg. Tambahkan buah agar beratnya pas sesuai pesanan! (1 buah = 0.5 kg)",
+                targetWeight: 2.0,
+                initialFruits: 2,
+                fruitWeight: 0.5,
+                successMsg: "Luar biasa! Kamu telah menimbang jeruk dengan tepat 2.0 kg sesuai pesanan pembeli."
+            },
+            {
+                type: 'interactive',
+                title: "Latihan 2: Kurangi Kelebihan",
+                desc: "Pesanan kali ini adalah 1.5 kg apel. Tapi lihat, buah di timbangan terlalu banyak! Kurangi jumlahnya agar pas 1.5 kg. (1 buah = 0.5 kg)",
+                targetWeight: 1.5,
+                initialFruits: 5,
+                fruitWeight: 0.5,
+                successMsg: "Sempurna! Kamu sangat jeli mengurangi kelebihan timbangan agar adil."
+            },
+            {
+                type: 'interactive',
+                title: "Latihan 3: Menimbang dari Awal",
+                desc: "Pesanan selanjutnya adalah 3.0 kg mangga. Timbangan masih kosong. Ayo masukkan buah perlahan hingga mencapai 3.0 kg! (1 buah = 0.5 kg)",
+                targetWeight: 3.0,
+                initialFruits: 0,
+                fruitWeight: 0.5,
+                successMsg: "Hebat! Kamu berhasil menimbang buah dari awal dengan sangat presisi."
+            },
+            {
+                type: 'mcq',
+                title: "Tantangan 4: Konsep Dasar",
+                desc: "Seorang pembeli memesan 2 kg jeruk. Timbangan menunjukkan 2 kg. Apakah berat jeruk sesuai dengan pesanan?",
+                options: [
+                    { text: "Sesuai", isCorrect: true, feedback: "Benar! Jika angka timbangan sama dengan pesanan dan timbangan akurat, maka takaran telah dipenuhi." },
+                    { text: "Kurang", isCorrect: false, feedback: "Kurang tepat. Angka di timbangan sudah menunjukkan 2 kg sesuai pesanan." },
+                    { text: "Lebih", isCorrect: false, feedback: "Kurang tepat. Angkanya pas 2 kg, tidak lebih." }
+                ],
+                scaleText: "2.0 kg",
+                fruitVisualCount: 4
+            },
+            {
+                type: 'mcq',
+                title: "Tantangan 5: Periksa Timbangan",
+                desc: "Seorang pembeli memesan 2 kg apel, tetapi hasil penimbangan ulang menunjukkan 1,7 kg. Apa yang sebaiknya dilakukan pertama kali?",
+                options: [
+                    { text: "Langsung menerima barang", isCorrect: false, feedback: "Tunggu dulu, pembeli berhak menerima barang sesuai pesanan." },
+                    { text: "Memeriksa ulang timbangan", isCorrect: true, feedback: "Tepat sekali! Pemeriksaan ulang adalah tindakan adil sebelum mengambil kesimpulan." },
+                    { text: "Langsung menuduh penipu", isCorrect: false, feedback: "Kurang bijak. Jangan menuduh tanpa memeriksa bukti. Mungkin saja alat ukurnya rusak secara tidak sengaja." }
+                ],
+                scaleText: "1.7 kg",
+                fruitVisualCount: 3
+            },
+            {
+                type: 'mcq',
+                title: "Tantangan 6: Sikap yang Benar",
+                desc: "Pedagang menyadari bahwa berat barang memang kurang dari pesanan setelah diperiksa ulang. Apa yang seharusnya ia lakukan menurut ajaran Islam?",
+                options: [
+                    { text: "Membiarkannya", isCorrect: false, feedback: "Ini tidak adil dan akan merugikan pembeli serta melanggar syariat." },
+                    { text: "Memenuhi berat pesanan", isCorrect: true, feedback: "Sangat benar! Kejujuran dan keadilan mengharuskan pedagang memenuhi hak pembeli sesuai kesepakatan." },
+                    { text: "Menyalahkan pembeli", isCorrect: false, feedback: "Ini adalah tindakan tidak bertanggung jawab." }
+                ],
+                scaleText: "1.7 kg",
+                fruitVisualCount: 3
+            }
+        ];
+
+        let currentGameIndex = 0;
+        let activeInteractiveData = null;
+
+        function updateScaleVisual(fruitCount, currentWeightText) {
+            const container = document.getElementById('scale-fruits-container');
+            container.innerHTML = '';
+            
+            // Batasi jumlah visual agar tidak meluap dari wadah (max 10 buah)
+            const visualLimit = Math.min(fruitCount, 10);
+            
+            for(let i=0; i<visualLimit; i++) {
+                container.innerHTML += `<div class="w-8 h-8 bg-orange-500 rounded-full relative shadow-sm border-2 border-orange-600"><div class="w-1.5 h-3 bg-green-600 absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 rounded-t-sm"></div></div>`;
+            }
+            
+            document.getElementById('game-scale-display').innerText = currentWeightText;
+        }
+
+        function initGame() {
+            currentGameIndex = 0;
+            document.getElementById('game-result').classList.add('hidden');
+            document.getElementById('game-question-area').classList.remove('hidden');
+            document.getElementById('game-feedback').classList.add('hidden');
+            renderGameQuestion();
+        }
+
+        function renderGameQuestion() {
+            const q = gameQuestions[currentGameIndex];
+            
+            // Update Text UI
+            document.getElementById('game-title').innerText = q.title;
+            document.getElementById('game-desc').innerText = q.desc;
+            
+            // Update Progress Bar
+            const progressPct = ((currentGameIndex) / gameQuestions.length) * 100;
+            document.getElementById('game-progress').style.width = `${progressPct}%`;
+
+            const mcqArea = document.getElementById('game-options');
+            const intArea = document.getElementById('interactive-controls');
+
+            // Cek tipe soal
+            if (q.type === 'interactive') {
+                mcqArea.classList.add('hidden');
+                intArea.classList.remove('hidden');
+                
+                activeInteractiveData = {
+                    fruits: q.initialFruits,
+                    fruitWeight: q.fruitWeight,
+                    target: q.targetWeight,
+                    successMsg: q.successMsg
+                };
+                updateInteractiveUI();
+            } else {
+                mcqArea.classList.remove('hidden');
+                intArea.classList.add('hidden');
+                
+                updateScaleVisual(q.fruitVisualCount || 4, q.scaleText);
+
+                mcqArea.innerHTML = '';
+                q.options.forEach((opt, idx) => {
+                    const btn = document.createElement('button');
+                    btn.className = "w-full text-left p-4 rounded-xl border border-slate-200 hover:bg-blue-50 hover:border-blue-300 transition-colors bg-white font-medium text-slate-700 flex justify-between items-center group";
+                    btn.innerHTML = `<span>${opt.text}</span> <i class="fas fa-chevron-right text-slate-300 group-hover:text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity"></i>`;
+                    btn.onclick = () => handleGameAnswer(idx);
+                    mcqArea.appendChild(btn);
+                });
+            }
+        }
+
+        function changeFruits(delta) {
+            if (!activeInteractiveData) return;
+            
+            let newFruits = activeInteractiveData.fruits + delta;
+            // Batasi agar buah tidak minus, dan tidak lebih dari 12 agar UI tetap bagus
+            if (newFruits >= 0 && newFruits <= 12) { 
+                activeInteractiveData.fruits = newFruits;
+                updateInteractiveUI();
+            }
+        }
+
+        function updateInteractiveUI() {
+            if (!activeInteractiveData) return;
+            const currentWeight = activeInteractiveData.fruits * activeInteractiveData.fruitWeight;
+            document.getElementById('fruit-count').innerText = activeInteractiveData.fruits;
+            
+            updateScaleVisual(activeInteractiveData.fruits, currentWeight.toFixed(1) + ' kg');
+        }
+
+        function checkInteractiveAnswer() {
+            if (!activeInteractiveData) return;
+            const currentWeight = activeInteractiveData.fruits * activeInteractiveData.fruitWeight;
+            
+            // Cek apakah berat sesuai target (toleransi desimal)
+            const isCorrect = Math.abs(currentWeight - activeInteractiveData.target) < 0.01; 
+            
+            document.getElementById('game-question-area').classList.add('hidden');
+            
+            const feedbackArea = document.getElementById('game-feedback');
+            const iconEl = document.getElementById('feedback-icon');
+            const titleEl = document.getElementById('feedback-title');
+            const textEl = document.getElementById('feedback-text');
+            
+            feedbackArea.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-200', 'bg-orange-50', 'border-orange-200');
+            
+            const nextBtn = document.getElementById('game-next-btn');
+            
+            if (isCorrect) {
+                feedbackArea.classList.add('bg-emerald-50', 'border-emerald-200');
+                iconEl.className = "fas fa-check-circle text-2xl text-emerald-600 mt-1 mr-3";
+                titleEl.innerText = "Tepat Sekali!";
+                titleEl.className = "font-bold text-lg text-emerald-800";
+                textEl.innerText = activeInteractiveData.successMsg;
+                
+                nextBtn.innerText = "Lanjut";
+                nextBtn.onclick = proceedToNextQuestion;
+            } else {
+                feedbackArea.classList.add('bg-orange-50', 'border-orange-200');
+                iconEl.className = "fas fa-info-circle text-2xl text-orange-600 mt-1 mr-3";
+                titleEl.innerText = "Berat Belum Sesuai";
+                titleEl.className = "font-bold text-lg text-orange-800";
+                
+                if (currentWeight < activeInteractiveData.target) {
+                    textEl.innerText = `Pesanan adalah ${activeInteractiveData.target.toFixed(1)} kg, tapi timbanganmu kurang (${currentWeight.toFixed(1)} kg). Ayo tambah lagi buahnya!`;
+                } else {
+                    textEl.innerText = `Pesanan adalah ${activeInteractiveData.target.toFixed(1)} kg, tapi timbanganmu kelebihan (${currentWeight.toFixed(1)} kg). Ayo kurangi buahnya!`;
+                }
+                
+                nextBtn.innerText = "Coba Lagi";
+                nextBtn.onclick = () => {
+                    feedbackArea.classList.add('hidden');
+                    document.getElementById('game-question-area').classList.remove('hidden');
+                };
+            }
+        }
+
+        function handleGameAnswer(optIndex) {
+            const q = gameQuestions[currentGameIndex];
+            const opt = q.options[optIndex];
+            const isCorrect = opt.isCorrect;
+
+            document.getElementById('game-question-area').classList.add('hidden');
+            
+            const feedbackArea = document.getElementById('game-feedback');
+            const iconEl = document.getElementById('feedback-icon');
+            const titleEl = document.getElementById('feedback-title');
+            
+            feedbackArea.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-200', 'bg-orange-50', 'border-orange-200');
+            
+            if(isCorrect) {
+                feedbackArea.classList.add('bg-emerald-50', 'border-emerald-200');
+                iconEl.className = "fas fa-check-circle text-2xl text-emerald-600 mt-1 mr-3";
+                titleEl.innerText = "Tepat Sekali!";
+                titleEl.className = "font-bold text-lg text-emerald-800";
+            } else {
+                feedbackArea.classList.add('bg-orange-50', 'border-orange-200');
+                iconEl.className = "fas fa-info-circle text-2xl text-orange-600 mt-1 mr-3";
+                titleEl.innerText = "Mari Pikirkan Lagi";
+                titleEl.className = "font-bold text-lg text-orange-800";
+            }
+
+            document.getElementById('feedback-text').innerText = opt.feedback;
+            
+            const nextBtn = document.getElementById('game-next-btn');
+            nextBtn.innerText = "Lanjut";
+            nextBtn.onclick = proceedToNextQuestion;
+        }
+
+        function proceedToNextQuestion() {
+            currentGameIndex++;
+            document.getElementById('game-feedback').classList.add('hidden');
+            
+            if (currentGameIndex < gameQuestions.length) {
+                document.getElementById('game-question-area').classList.remove('hidden');
+                renderGameQuestion();
+            } else {
+                showGameResult();
+            }
+        }
+
+        function showGameResult() {
+            document.getElementById('game-progress').style.width = `100%`;
+            document.getElementById('game-question-area').classList.add('hidden');
+            document.getElementById('game-feedback').classList.add('hidden');
+            document.getElementById('game-result').classList.remove('hidden');
+        }
+
+        // Fungsi untuk mengunduh keseluruhan file HTML agar bisa digunakan offline
+        function downloadApp() {
+            // Ambil semua isi HTML yang saat ini ada
+            const htmlContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+            
+            // Jadikan file bertipe teks HTML
+            const blob = new Blob([htmlContent], {type: 'text/html'});
+            const url = URL.createObjectURL(blob);
+            
+            // Buat elemen link tersembunyi untuk memicu unduhan
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'DETIQ_Media_Pembelajaran.html';
+            document.body.appendChild(a);
+            
+            // Jalankan unduhan
+            a.click();
+            
+            // Bersihkan memori dan elemen
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            // Tampilkan notifikasi
+            showToast();
+        }
+
+        // Fungsi memunculkan notifikasi tanpa menggunakan alert()
+        function showToast() {
+            const toast = document.getElementById('toast-notification');
+            if(toast) {
+                toast.classList.remove('translate-y-24', 'opacity-0');
+                
+                // Sembunyikan otomatis setelah 4 detik
+                setTimeout(() => {
+                    toast.classList.add('translate-y-24', 'opacity-0');
+                }, 4000);
+            }
+        }
+
+    </script>
+</body>
+</html>
